@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec: 
+  replicas: 1
+  # Tell depl how to find pods
+  selector:
+    matchLabels:
+      app: auth
+  # How to build a pod
+  template:
+    metadata:
+      labels:
+        app: auth
+    # How pod should behave
+    spec:
+      containers:
+        - name: auth
+          image: jakedwng/auth
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+# How service should behave
+spec: 
+  selector: 
+    app: auth
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
