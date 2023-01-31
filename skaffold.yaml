@@ -1,0 +1,25 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+# All config files to load in the cluster
+deploy:
+  kubectl:
+    # List all the files to sync
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    push: false
+  # Everything that is going to be built
+  artifacts:
+    - image: jakedwng/auth
+      # Folder containing image
+      context: auth
+      docker: 
+        dockerfile: Dockerfile
+      # How to handle files that change
+      sync: 
+        manual:
+            # Files skaffold watches
+          - src: 'src/**/*.ts'
+            dest: .
+  
