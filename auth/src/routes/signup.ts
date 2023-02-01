@@ -1,5 +1,7 @@
 import express from 'express';
-import { validationResult, body } from 'express-validator'
+import { validationResult, body } from 'express-validator';
+import { RequestValidationError } from '../errors/request-error';
+import { DbConnectionError } from '../errors/db-connection-error';
 
 const router = express.Router();
 
@@ -12,15 +14,16 @@ router.post('/api/users/signup', [
 		.isLength({ min: 5, max: 20 })
 		.withMessage('Please enter a valid password')
 ],
-	(req: express.Request, res: express.Response) => {
+	async (req: express.Request, res: express.Response) => {
 		const { email, password } = req.body;
 
 		const errors = validationResult(req);
 
 		if(!errors.isEmpty()) {
-			return res.status(400).send(errors.array());
+			throw new RequestValidationError(errors.array());
 		}
 		
+		throw new DbConnectionError();
 		console.log('Creating a user...');
 
 		res.send({});
